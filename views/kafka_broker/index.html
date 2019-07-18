@@ -1,0 +1,42 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Kafka Broker 管理
+        <small></small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{urlfor " HomeController.Index"}}">
+            <i class="fa fa-dashboard"></i> 首页</a>
+        </li>
+        <li class="active">Kafka Broker 管理</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content container-fluid">
+    <!-- 页面内容开始 -->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- /.searchForm -->
+            <div class="box box-solid">
+                <div class="box-body">
+                    <div class="btn-group" id="toolbar">
+                        {{ if .canEdit}}
+                        <button class="btn btn-info" href="javascript:;" onclick="EditFun(0)">
+                            <i class="fa fa-plus"></i> 添加
+                        </button>
+                        {{end}}
+                        {{ if .canDelete}}
+                        <button class="btn btn-danger table-btn-check-enable" disabled onclick="DeleteFun()">
+                            <i class="fa fa-trash"></i> 删除
+                        </button>
+                        {{end}}
+                    </div>
+                    <table id="dataGrid"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 页面内容结束 -->
+</section>
+<!-- /.content -->
