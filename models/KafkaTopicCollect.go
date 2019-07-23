@@ -12,15 +12,15 @@ func (a *KafkaTopicCollect) TableName() string {
 // KafkaTopicCollectQueryParam 用于查询的类
 type KafkaTopicCollectQueryParam struct {
 	BaseQueryParam
+	UserId int64
 	Broker string
 	Topic  string
-	UserId int64
 }
 
 // KafkaTopicCollect 实体类
 type KafkaTopicCollect struct {
 	Id     int
-	UserId int `orm:"size(11)"`
+	UserId int    `orm:"size(11)"`
 	Broker string `orm:"size(300)"`
 	Topic  string `orm:"size(300)"`
 }
@@ -32,14 +32,16 @@ func KafkaTopicCollectPageList(params *KafkaTopicCollectQueryParam) ([]*KafkaTop
 	//默认排序
 	sortorder := "Id"
 	switch params.Sort {
-	case "Id":
-		sortorder = "Id"
+	case "Broker":
+		sortorder = "Broker"
+	case "Topic":
+		sortorder = "Topic"
 	}
 	if params.Order == "desc" {
 		sortorder = "-" + sortorder
 	}
 
-	if (params.UserId > 0) {
+	if params.UserId > 0 {
 		query = query.Filter("user_id", params.UserId)
 	}
 
@@ -51,11 +53,11 @@ func KafkaTopicCollectPageList(params *KafkaTopicCollectQueryParam) ([]*KafkaTop
 	return data, total
 }
 
-func KafkaTopicCollectTotal() (int64) {
+func KafkaTopicCollectTotal() int64 {
 	query := orm.NewOrm().QueryTable(KafkaTopicCollectTBName())
 
 	total, _ := query.Count()
-	
+
 	return total
 }
 
@@ -64,16 +66,6 @@ func KafkaTopicCollectOne(id int) (*KafkaTopicCollect, error) {
 	o := orm.NewOrm()
 	m := KafkaTopicCollect{Id: id}
 	err := o.Read(&m)
-	if err != nil {
-		return nil, err
-	}
-	return &m, nil
-}
-
-// KafkaTopicCollectOneByUserName
-func KafkaTopicCollectOneByUserName(username, userpwd string) (*KafkaTopicCollect, error) {
-	m := KafkaTopicCollect{}
-	err := orm.NewOrm().QueryTable(KafkaTopicCollectTBName()).Filter("username", username).Filter("userpwd", userpwd).One(&m)
 	if err != nil {
 		return nil, err
 	}

@@ -1,15 +1,15 @@
 package controllers
 
 import (
-	"strings"
-	"strconv"
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/astaxie/beego/orm"
 
-	"github.com/liushuangxi/kafka-message-management/models"
 	"github.com/liushuangxi/kafka-message-management/enums"
+	"github.com/liushuangxi/kafka-message-management/models"
 )
 
 type KafkaBrokerController struct {

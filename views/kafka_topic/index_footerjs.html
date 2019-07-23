@@ -112,10 +112,10 @@
             }, {
                 field: 'operate',
                 title: '操作',
-                width: '200px',
+                width: '100px',
                 formatter: function (value, row, index) {
-                    var html = '<button ' + (row.Collect == "1" ? "style='display:none'" : "" ) + ' class="btn btn-primary btn-xs" onclick="CollectFun(1,\'' + row.Topic + '\')">收藏</button>';
-                    html += '<button ' + (row.Collect == "0" ? "style='display:none'" : "" ) + 'class="btn btn-primary btn-xs" onclick="CollectFun(0,\'' + row.Topic + '\')">取消收藏</button>';
+                    var html = '<button name="' + row.Topic + '__0"' + (row.Collect == "1" ? "style='display:none'" : "" ) + ' class="btn btn-primary btn-xs" onclick="CollectFun(\'' + row.Topic + '\', 1)">收藏</button>';
+                    html += '<button name="' + row.Topic + '__1"' + (row.Collect == "0" ? "style='display:none'" : "" ) + 'class="btn btn-primary btn-xs" onclick="CollectFun(\'' + row.Topic + '\', 0)">取消收藏</button>';
                     return html
                 }
             }],
@@ -139,7 +139,7 @@
         });
     }
 
-    function CollectFun(collect, topic) {
+    function CollectFun(topic, collect) {
         var api = '{{ urlfor "KafkaTopicCollectController.Collect"}}';
         var broker = $('input[name="Broker"]').val();
 
@@ -150,7 +150,15 @@
                 "topic": topic
             },
             function (result) {
-                layer.alert(result.msg)
+                layer.alert(result.msg);
+
+                if (collect == 1) {
+                    $('button[name="' + topic + '__1"]').css('display', 'block');
+                    $('button[name="' + topic + '__0"]').css('display', 'none');
+                } else {
+                    $('button[name="' + topic + '__0"]').css('display', 'block');
+                    $('button[name="' + topic + '__1"]').css('display', 'none');
+                }
             });
     }
 </script>

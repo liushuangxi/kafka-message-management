@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/liushuangxi/kafka-message-management/utils"
 	"github.com/liushuangxi/kafka-message-management/models"
+	"github.com/liushuangxi/kafka-message-management/utils"
 )
 
 type KafkaTopicController struct {
@@ -53,6 +53,7 @@ func (c *KafkaTopicController) DataGrid() {
 
 	log.Printf("%s", params.Topic)
 
+	// Topic Collect
 	paramsCollect := models.KafkaTopicCollectQueryParam{}
 	paramsCollect.UserId = int64(c.curUser.Id)
 	collectList, _ := models.KafkaTopicCollectPageList(&paramsCollect)
@@ -62,6 +63,7 @@ func (c *KafkaTopicController) DataGrid() {
 	for _, collect := range collectList {
 		collectMap[collect.Topic] = 1
 	}
+	// Topic Collect
 
 	total = 0
 	for i := 0; i < len(topics); i++ {

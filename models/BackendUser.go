@@ -32,7 +32,7 @@ type BackendUser struct {
 	RoleIds            []int                 `orm:"-" form:"RoleIds"`
 	RoleBackendUserRel []*RoleBackendUserRel `orm:"reverse(many)"` // 设置一对多的反向关系
 	ResourceUrlForList []string              `orm:"-"`
-								       //CreateCourses      []*Course             `rom:"reverse(many)"` // 设置一对多的反向关系
+	//CreateCourses      []*Course             `rom:"reverse(many)"` // 设置一对多的反向关系
 }
 
 // BackendUserPageList 获取分页数据
@@ -61,7 +61,7 @@ func BackendUserPageList(params *BackendUserQueryParam) ([]*BackendUser, int64) 
 	return data, total
 }
 
-func BackendUserTotal() (int64) {
+func BackendUserTotal() int64 {
 	query := orm.NewOrm().QueryTable(BackendUserTBName())
 
 	total, _ := query.Count()

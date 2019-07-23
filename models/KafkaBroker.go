@@ -30,10 +30,12 @@ func KafkaBrokerPageList(params *KafkaBrokerQueryParam) ([]*KafkaBroker, int64) 
 	query := orm.NewOrm().QueryTable(KafkaBrokerTBName())
 	data := make([]*KafkaBroker, 0)
 	//默认排序
-	sortorder := "Id"
+	sortorder := "Broker"
 	switch params.Sort {
-	case "Id":
-		sortorder = "Id"
+	case "Broker":
+		sortorder = "Broker"
+	case "Alias":
+		sortorder = "Alias"
 	}
 	if params.Order == "desc" {
 		sortorder = "-" + sortorder
@@ -47,7 +49,7 @@ func KafkaBrokerPageList(params *KafkaBrokerQueryParam) ([]*KafkaBroker, int64) 
 	return data, total
 }
 
-func KafkaBrokerTotal() (int64) {
+func KafkaBrokerTotal() int64 {
 	query := orm.NewOrm().QueryTable(KafkaBrokerTBName())
 
 	total, _ := query.Count()
@@ -55,12 +57,12 @@ func KafkaBrokerTotal() (int64) {
 	return total
 }
 
-func KafkaTopicTotal() (int64) {
+func KafkaTopicTotal() int64 {
 	query := orm.NewOrm().QueryTable(KafkaBrokerTBName())
 	data := make([]*KafkaBroker, 0)
 	query.Limit(100, 0).All(&data)
 
-	total := 0;
+	total := 0
 	for _, broker := range data {
 		topics, _ := utils.GetTopics(broker.Broker)
 

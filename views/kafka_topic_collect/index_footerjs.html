@@ -101,14 +101,15 @@
                 field: 'Id',
                 title: 'ID',
                 width: '90px',
-                align: 'center',
-                sortable: true
+                align: 'center'
             }, {
                 field: 'Broker',
-                title: 'Broker'
+                title: 'Broker',
+                sortable: true
             }, {
                 field: 'Topic',
-                title: 'Topic'
+                title: 'Topic',
+                sortable: true
             }, {
                 field: 'operate',
                 title: '操作',
@@ -116,7 +117,7 @@
                 formatter: function (value, row, index) {
                     var url = '{{ urlfor "KafkaMessageController.Index"}}'
                     url += "?broker=" + row.Broker + "&topic=" + row.Topic
-                    return '<button class="btn btn-primary btn-xs" onclick="location.href=\'' + url + '\'">打开</button>'
+                    return '<button class="btn btn-primary btn-xs" onclick="location.href=\'' + url + '\'">查看消息</button>'
                 }
             }],
             onLoadSuccess: function (data) {
