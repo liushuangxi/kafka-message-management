@@ -56,6 +56,7 @@ func (c *KafkaTopicController) DataGrid() {
 	// Topic Collect
 	paramsCollect := models.KafkaTopicCollectQueryParam{}
 	paramsCollect.UserId = int64(c.curUser.Id)
+	paramsCollect.Broker = params.Broker
 	collectList, _ := models.KafkaTopicCollectPageList(&paramsCollect)
 
 	var collectMap map[string]int

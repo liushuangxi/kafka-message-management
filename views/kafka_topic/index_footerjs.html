@@ -140,7 +140,7 @@
     }
 
     function CollectFun(topic, collect) {
-        var api = '{{ urlfor "KafkaTopicCollectController.Collect"}}';
+        var api = '{{ urlfor "KafkaTopicCollectController.Update"}}';
         var broker = $('input[name="Broker"]').val();
 
         $.post(api,
@@ -150,8 +150,6 @@
                 "topic": topic
             },
             function (result) {
-                layer.alert(result.msg);
-
                 if (collect == 1) {
                     $('button[name="' + topic + '__1"]').css('display', 'block');
                     $('button[name="' + topic + '__0"]').css('display', 'none');

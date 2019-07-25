@@ -14,9 +14,10 @@ func GetPartitionOffsets(broker string, topic string, partition int32) (startOff
 	log("info", fmt.Sprintf("utils.kafka.GetPartitionOffsets broker %s topic %s partition %d",
 		broker, topic, partition))
 
-	consumer, err := sarama.NewConsumer([]string{broker}, nil)
-	if err != nil {
-		log("error", fmt.Sprintf("utils.kafka.GetPartitionOffsets error %s", err.Error()))
+	consumer := GetKafkaConsumer(broker)
+
+	if consumer == nil {
+		log("error", fmt.Sprintf("utils.kafkaTopic.GetPartitionOffsets broker %s", broker))
 	}
 
 	defer consumer.Close()
@@ -63,9 +64,10 @@ func GetPartitionMessages(params KafkaMessageQueryParam) []*KafkaMessage {
 	log("info", fmt.Sprintf("utils.kafka.GetMessages broker %s topic %s offset %d limit %d order %s sort %s",
 		params.Broker, params.Topic, params.Offset, params.Limit, params.Order, params.Sort))
 
-	consumer, err := sarama.NewConsumer([]string{params.Broker}, nil)
-	if err != nil {
-		log("error", fmt.Sprintf("utils.kafka.GetMessages error %s", err.Error()))
+	consumer := GetKafkaConsumer(params.Broker)
+
+	if consumer == nil {
+		log("error", fmt.Sprintf("utils.kafkaTopic.GetPartitionMessages broker %s topic %s", params.Broker))
 	}
 
 	defer consumer.Close()

@@ -43,7 +43,9 @@ func (c *KafkaBrokerController) DataGrid() {
 	result := make(map[string]interface{})
 	result["total"] = total
 	result["rows"] = data
+	result["canEdit"] = c.checkActionAuthor("KafkaBrokerController", "Edit")
 	c.Data["json"] = result
+
 	c.ServeJSON()
 }
 

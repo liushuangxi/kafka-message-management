@@ -26,7 +26,7 @@ func init() {
 	beego.Router("/kafka_topic_collect/index", &controllers.KafkaTopicCollectController{}, "*:Index")
 	beego.Router("/kafka_topic_collect/datagrid", &controllers.KafkaTopicCollectController{}, "Get,Post:DataGrid")
 	beego.Router("/kafka_topic_collect/delete", &controllers.KafkaTopicCollectController{}, "Post:Delete")
-	beego.Router("/kafka_topic_collect/collect", &controllers.KafkaTopicCollectController{}, "Post:Collect")
+	beego.Router("/kafka_topic_collect/update", &controllers.KafkaTopicCollectController{}, "Post:Update")
 
 	//用户角色路由
 	beego.Router("/role/index", &controllers.RoleController{}, "*:Index")

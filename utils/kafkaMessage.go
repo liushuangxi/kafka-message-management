@@ -26,8 +26,9 @@ type KafkaMessage struct {
 }
 
 func GetMessages(params KafkaMessageQueryParam) ([]*KafkaMessage, int64) {
-	originOffset := params.Offset
-	originLimit := params.Limit
+	if len(params.Message) > 0 {
+		return GetMessagesBySearch(params)
+	}
 
 	total, minOffset, maxOffset := GetTopicTotalMessage(params.Broker, params.Topic)
 
@@ -47,100 +48,123 @@ func GetMessages(params KafkaMessageQueryParam) ([]*KafkaMessage, int64) {
 		}
 	}
 
-	messages := make([]*KafkaMessage, 0)
+	messages := GetPartitionMessages(params)
 
-	if len(params.Message) <= 0 {
-		messages = GetPartitionMessages(params)
+	// sort messages
 
-		// sort messages
-
-		if params.Order == "asc" {
-			sort.Slice(messages, func(i, j int) bool {
-				return messages[i].Offset < messages[j].Offset
-			})
-		} else {
-			sort.Slice(messages, func(i, j int) bool {
-				return messages[i].Offset > messages[j].Offset
-			})
-		}
+	if params.Order == "asc" {
+		sort.Slice(messages, func(i, j int) bool {
+			return messages[i].Offset < messages[j].Offset
+		})
 	} else {
-		// search messages
-
-		total = 0        //total return record
-		totalRecord := 0 //total search record
-		params.Limit = SEARCH_PAGE_SIZE
-		if params.Order == "asc" {
-			params.Offset = minOffset
-		}
-		for {
-			tmps := GetPartitionMessages(params)
-
-			for _, tmp := range tmps {
-				totalRecord++
-
-				if strings.Index(tmp.Data, params.Message) <= -1 {
-					continue
-				}
-
-				messages = append(messages, tmp)
-
-				total++
-			}
-
-			if total >= int64(params.MaxReturnRecord) {
-				break
-			}
-
-			if totalRecord > params.MaxSearchRecord {
-				break
-			}
-
-			if params.Offset < minOffset || params.Offset > maxOffset {
-				break
-			}
-
-			if params.Order == "asc" {
-				params.Offset = params.Offset + int64(params.Limit)
-			} else {
-				params.Offset = params.Offset - int64(params.Limit)
-			}
-		}
-
-		// sort messages
-
-		if params.Order == "asc" {
-			sort.Slice(messages, func(i, j int) bool {
-				return messages[i].Offset < messages[j].Offset
-			})
-		} else {
-			sort.Slice(messages, func(i, j int) bool {
-				return messages[i].Offset > messages[j].Offset
-			})
-		}
-
-		if int64(params.MaxReturnRecord) < total {
-			total = int64(params.MaxReturnRecord)
-		}
-
-		messages = messages[0:total]
-
-		// set startIndex endIndex
-
-		startIndex := int64(0)
-		endIndex := int64(0)
-		if int64(len(messages)) >= originOffset {
-			startIndex = originOffset
-			if int64(len(messages)) <= originOffset+int64(originLimit) {
-				endIndex = int64(len(messages))
-			} else {
-				endIndex = originOffset + int64(originLimit)
-			}
-		}
-
-		if int64(len(messages)) > 0 {
-			messages = messages[startIndex:endIndex]
-		}
+		sort.Slice(messages, func(i, j int) bool {
+			return messages[i].Offset > messages[j].Offset
+		})
 	}
 
 	return messages, total
+}
+
+func GetMessagesBySearch(params KafkaMessageQueryParam) ([]*KafkaMessage, int64) {
+	originOffset := params.Offset
+	originLimit := params.Limit
+
+	_, minOffset, maxOffset := GetTopicTotalMessage(params.Broker, params.Topic)
+
+	// set partition start offset
+
+	if params.Sort == "Offset" && params.Order == "asc" {
+		if params.Offset == 0 {
+			params.Offset = minOffset
+		} else {
+			params.Offset = minOffset + params.Offset
+		}
+	} else {
+		if params.Offset == 0 {
+			params.Offset = maxOffset - int64(params.Limit)
+		} else {
+			params.Offset = maxOffset - int64(params.Limit) - params.Offset
+		}
+	}
+
+	messages := make([]*KafkaMessage, 0)
+
+	// search messages
+
+	totalReturn := 0 //total return record
+	totalSearch := 0 //total search record
+	params.Limit = SEARCH_PAGE_SIZE
+	if params.Order == "asc" {
+		params.Offset = minOffset
+	}
+
+	for {
+		tmps := GetPartitionMessages(params)
+
+		for _, tmp := range tmps {
+			totalSearch++
+
+			if strings.Index(tmp.Data, params.Message) <= -1 {
+				continue
+			}
+
+			messages = append(messages, tmp)
+
+			totalReturn++
+		}
+
+		if totalReturn >= params.MaxReturnRecord {
+			break
+		}
+
+		if totalSearch > params.MaxSearchRecord {
+			break
+		}
+
+		if params.Offset < minOffset || params.Offset > maxOffset {
+			break
+		}
+
+		if params.Order == "asc" {
+			params.Offset = params.Offset + int64(params.Limit)
+		} else {
+			params.Offset = params.Offset - int64(params.Limit)
+		}
+	}
+
+	// sort messages
+
+	if params.Order == "asc" {
+		sort.Slice(messages, func(i, j int) bool {
+			return messages[i].Offset < messages[j].Offset
+		})
+	} else {
+		sort.Slice(messages, func(i, j int) bool {
+			return messages[i].Offset > messages[j].Offset
+		})
+	}
+
+	if params.MaxReturnRecord < totalReturn {
+		totalReturn = params.MaxReturnRecord
+		messages = messages[0:totalReturn]
+	}
+
+	// set startIndex endIndex
+
+	startIndex := int64(0)
+	endIndex := int64(0)
+	if int64(len(messages)) >= originOffset {
+		startIndex = originOffset
+		if int64(len(messages)) <= originOffset+int64(originLimit) {
+			endIndex = int64(len(messages))
+		} else {
+			endIndex = originOffset + int64(originLimit)
+		}
+	}
+
+	if int64(len(messages)) > 0 {
+		messages = messages[startIndex:endIndex]
+	}
+
+	return messages, int64(totalReturn)
 }

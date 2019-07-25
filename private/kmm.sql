@@ -136,7 +136,7 @@ CREATE TABLE `rms_resource` (
   `icon` varchar(32) NOT NULL DEFAULT '',
   `url_for` varchar(256) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -145,7 +145,7 @@ CREATE TABLE `rms_resource` (
 
 LOCK TABLES `rms_resource` WRITE;
 /*!40000 ALTER TABLE `rms_resource` DISABLE KEYS */;
-INSERT INTO `rms_resource` VALUES (7,1,'权限管理',8,100,'fa fa-balance-scale',''),(8,0,'系统菜单',NULL,200,'',''),(9,1,'资源管理',7,100,'','ResourceController.Index'),(12,1,'角色管理',7,100,'','RoleController.Index'),(13,1,'用户管理',7,100,'','BackendUserController.Index'),(21,0,'业务菜单',NULL,170,'',''),(25,2,'编辑',9,100,'fa fa-pencil','ResourceController.Edit'),(26,2,'编辑',13,100,'fa fa-pencil','BackendUserController.Edit'),(27,2,'删除',9,100,'fa fa-trash','ResourceController.Delete'),(29,2,'删除',13,100,'fa fa-trash','BackendUserController.Delete'),(30,2,'编辑',12,100,'fa fa-pencil','RoleController.Edit'),(31,2,'删除',12,100,'fa fa-trash','RoleController.Delete'),(32,2,'分配资源',12,100,'fa fa-th','RoleController.Allocate'),(35,1,' 首页',NULL,100,'fa fa-dashboard','HomeController.Index'),(39,1,'Kafka Broker',21,100,'','KafkaBrokerController.Index'),(40,1,'Topic Collect',21,100,'','KafkaTopicCollectController.Index'),(41,2,'Kafka Message Permission',39,100,'','KafkaMessageController.Index'),(42,2,'Kafka Topic Permission',39,100,'','KafkaTopicController.Index');
+INSERT INTO `rms_resource` VALUES (7,1,'权限管理',8,100,'fa fa-balance-scale',''),(8,0,'系统菜单',NULL,200,'',''),(9,1,'资源管理',7,100,'','ResourceController.Index'),(12,1,'角色管理',7,100,'','RoleController.Index'),(13,1,'用户管理',7,100,'','BackendUserController.Index'),(21,0,'业务菜单',NULL,170,'',''),(25,2,'编辑',9,100,'fa fa-pencil','ResourceController.Edit'),(26,2,'编辑',13,100,'fa fa-pencil','BackendUserController.Edit'),(27,2,'删除',9,100,'fa fa-trash','ResourceController.Delete'),(29,2,'删除',13,100,'fa fa-trash','BackendUserController.Delete'),(30,2,'编辑',12,100,'fa fa-pencil','RoleController.Edit'),(31,2,'删除',12,100,'fa fa-trash','RoleController.Delete'),(32,2,'分配资源',12,100,'fa fa-th','RoleController.Allocate'),(35,1,' 首页',NULL,100,'fa fa-dashboard','HomeController.Index'),(39,1,'Kafka Broker',21,100,'','KafkaBrokerController.Index'),(40,1,'Topic Collect',21,100,'','KafkaTopicCollectController.Index'),(41,2,'Kafka Message Permission',39,100,'','KafkaMessageController.Index'),(42,2,'Kafka Topic Permission',39,100,'','KafkaTopicController.Index'),(43,2,'Topic Collect Update',40,100,'','KafkaTopicCollectController.Update'),(44,2,'Topic Collect Delete',40,100,'','KafkaTopicCollectController.Delete');
 /*!40000 ALTER TABLE `rms_resource` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -213,7 +213,7 @@ CREATE TABLE `rms_role_resource_rel` (
   `resource_id` int(11) NOT NULL,
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=500 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=513 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -222,7 +222,7 @@ CREATE TABLE `rms_role_resource_rel` (
 
 LOCK TABLES `rms_role_resource_rel` WRITE;
 /*!40000 ALTER TABLE `rms_role_resource_rel` DISABLE KEYS */;
-INSERT INTO `rms_role_resource_rel` VALUES (448,24,8,'2017-12-19 06:40:16'),(474,22,35,'2019-06-27 23:09:46'),(475,22,21,'2019-06-27 23:09:46'),(480,22,8,'2019-06-27 23:09:46'),(481,22,7,'2019-06-27 23:09:46'),(482,22,9,'2019-06-27 23:09:46'),(483,22,25,'2019-06-27 23:09:46'),(484,22,27,'2019-06-27 23:09:46'),(485,22,12,'2019-06-27 23:09:46'),(486,22,30,'2019-06-27 23:09:46'),(487,22,31,'2019-06-27 23:09:46'),(488,22,32,'2019-06-27 23:09:46'),(489,22,13,'2019-06-27 23:09:46'),(490,22,26,'2019-06-27 23:09:46'),(491,22,29,'2019-06-27 23:09:46'),(495,26,21,'2019-07-05 13:34:19'),(496,26,39,'2019-07-05 13:34:19'),(497,26,41,'2019-07-05 13:34:19'),(498,26,42,'2019-07-05 13:34:19'),(499,26,40,'2019-07-05 13:34:19');
+INSERT INTO `rms_role_resource_rel` VALUES (448,24,8,'2017-12-19 06:40:16'),(474,22,35,'2019-06-27 23:09:46'),(475,22,21,'2019-06-27 23:09:46'),(480,22,8,'2019-06-27 23:09:46'),(481,22,7,'2019-06-27 23:09:46'),(482,22,9,'2019-06-27 23:09:46'),(483,22,25,'2019-06-27 23:09:46'),(484,22,27,'2019-06-27 23:09:46'),(485,22,12,'2019-06-27 23:09:46'),(486,22,30,'2019-06-27 23:09:46'),(487,22,31,'2019-06-27 23:09:46'),(488,22,32,'2019-06-27 23:09:46'),(489,22,13,'2019-06-27 23:09:46'),(490,22,26,'2019-06-27 23:09:46'),(491,22,29,'2019-06-27 23:09:46'),(506,26,21,'2019-07-24 12:16:03'),(507,26,39,'2019-07-24 12:16:03'),(508,26,41,'2019-07-24 12:16:03'),(509,26,42,'2019-07-24 12:16:03'),(510,26,40,'2019-07-24 12:16:03'),(511,26,43,'2019-07-24 12:16:03'),(512,26,44,'2019-07-24 12:16:03');
 /*!40000 ALTER TABLE `rms_role_resource_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -235,4 +235,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-18 13:58:54
+-- Dump completed on 2019-07-24 20:24:07

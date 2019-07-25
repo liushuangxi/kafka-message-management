@@ -130,6 +130,9 @@
                 }
             }],
             onLoadSuccess: function (data) {
+                if (!data.canEdit) {
+                    $('.bs-checkbox').remove()
+                }
             },
             onCheckAll: function (rows) {
                 $(".table-btn-check-enable").prop('disabled', false);

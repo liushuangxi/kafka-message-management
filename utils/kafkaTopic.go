@@ -2,8 +2,6 @@ package utils
 
 import (
 	"fmt"
-
-	"github.com/Shopify/sarama"
 )
 
 type KafkaTopicQueryParam struct {
@@ -16,11 +14,12 @@ type KafkaTopicQueryParam struct {
 }
 
 func GetTopics(broker string) ([]string, error) {
-	log("info", fmt.Sprintf("utils.kafka.GetTopics broker %s\n", broker))
+	log("info", fmt.Sprintf("utils.kafkaTopic.GetTopics broker %s\n", broker))
 
-	consumer, err := sarama.NewConsumer([]string{broker}, nil)
-	if err != nil {
-		log("error", fmt.Sprintf("utils.kafka.GetTopics error %s\n", err.Error()))
+	consumer := GetKafkaConsumer(broker)
+
+	if consumer == nil {
+		log("error", fmt.Sprintf("utils.kafkaTopic.GetTopics broker %s", broker))
 	}
 
 	defer consumer.Close()
@@ -34,12 +33,12 @@ func GetTopicTotalMessage(broker string, topic string) (total int64, minOffset i
 
 	//create consumer
 
-	log("info", fmt.Sprintf("utils.kafka.GetTopicTotalMessage broker %s topic %s",
-		broker, topic))
+	log("info", fmt.Sprintf("utils.kafkaTopic.GetTopicTotalMessage broker %s topic %s", broker, topic))
 
-	consumer, err := sarama.NewConsumer([]string{broker}, nil)
-	if err != nil {
-		log("error", fmt.Sprintf("utils.kafka.GetTopicTotalMessage error %s", err.Error()))
+	consumer := GetKafkaConsumer(broker)
+
+	if consumer == nil {
+		log("error", fmt.Sprintf("utils.kafkaTopic.GetTopicTotalMessage broker %s", broker))
 	}
 
 	defer consumer.Close()

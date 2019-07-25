@@ -73,7 +73,7 @@ func (c *KafkaTopicCollectController) Delete() {
 	}
 }
 
-func (c *KafkaTopicCollectController) Collect() {
+func (c *KafkaTopicCollectController) Update() {
 	userId := c.curUser.Id
 	broker := c.GetString("broker")
 	topic := c.GetString("topic")
