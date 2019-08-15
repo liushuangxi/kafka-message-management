@@ -74,24 +74,17 @@ func GetPartitionMessages(params KafkaMessageQueryParam) []*KafkaMessage {
 
 	//topic all partitions
 
-	partitions, err := consumer.Partitions(params.Topic)
-	if err != nil {
-		log("error", fmt.Sprintf("utils.kafka.GetMessages error %s", err.Error()))
-	}
+	for partition, partitionOffset := range params.PartitionOffsets {
+		startOffset := partitionOffset["start"]
+		endOffset := partitionOffset["end"]
 
-	for partition := range partitions {
-		//get partition offsets
-
-		startOffset, endOffset := GetPartitionOffsets(params.Broker, params.Topic, int32(partition))
 		if startOffset < 0 || endOffset < 0 || params.Offset >= endOffset {
 			continue
 		}
 
-		//create partition_consumer
-
-		partition_consumer, err := consumer.ConsumePartition(params.Topic, int32(partition), params.Offset+1)
+		partition_consumer, err := consumer.ConsumePartition(params.Topic, partition, params.Offset+1)
 		if params.Offset+1 < startOffset {
-			partition_consumer, err = consumer.ConsumePartition(params.Topic, int32(partition), sarama.OffsetOldest)
+			partition_consumer, err = consumer.ConsumePartition(params.Topic, partition, sarama.OffsetOldest)
 		}
 
 		if err != nil {

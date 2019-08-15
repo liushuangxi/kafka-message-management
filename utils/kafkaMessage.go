@@ -5,18 +5,17 @@ import (
 	"strings"
 )
 
-const SEARCH_PAGE_SIZE = 1000
-
 type KafkaMessageQueryParam struct {
-	Sort            string `json:"sort"`
-	Order           string `json:"order"`
-	Offset          int64  `json:"offset"`
-	Limit           int    `json:"limit"`
-	Broker          string `json:"Broker"`
-	Topic           string `json:"Topic"`
-	Message         string `json:"Message"`
-	MaxReturnRecord int    `json:"MaxReturnRecord"`
-	MaxSearchRecord int    `json:"MaxSearchRecord"`
+	Sort             string `json:"sort"`
+	Order            string `json:"order"`
+	Offset           int64  `json:"offset"`
+	Limit            int    `json:"limit"`
+	Broker           string `json:"Broker"`
+	Topic            string `json:"Topic"`
+	Message          string `json:"Message"`
+	MaxReturnRecord  int    `json:"MaxReturnRecord"`
+	MaxSearchRecord  int    `json:"MaxSearchRecord"`
+	PartitionOffsets map[int32]map[string]int64
 }
 
 type KafkaMessage struct {
@@ -30,7 +29,8 @@ func GetMessages(params KafkaMessageQueryParam) ([]*KafkaMessage, int64) {
 		return GetMessagesBySearch(params)
 	}
 
-	total, minOffset, maxOffset := GetTopicTotalMessage(params.Broker, params.Topic)
+	total, minOffset, maxOffset, partitionOffsets := GetTopicTotalMessage(params.Broker, params.Topic)
+	params.PartitionOffsets = partitionOffsets
 
 	// set partition start offset
 
@@ -69,7 +69,8 @@ func GetMessagesBySearch(params KafkaMessageQueryParam) ([]*KafkaMessage, int64)
 	originOffset := params.Offset
 	originLimit := params.Limit
 
-	_, minOffset, maxOffset := GetTopicTotalMessage(params.Broker, params.Topic)
+	_, minOffset, maxOffset, partitionOffsets := GetTopicTotalMessage(params.Broker, params.Topic)
+	params.PartitionOffsets = partitionOffsets
 
 	// set partition start offset
 
@@ -93,7 +94,17 @@ func GetMessagesBySearch(params KafkaMessageQueryParam) ([]*KafkaMessage, int64)
 
 	totalReturn := 0 //total return record
 	totalSearch := 0 //total search record
-	params.Limit = SEARCH_PAGE_SIZE
+
+	// set offset limit
+
+	if params.MaxSearchRecord > 5000000 {
+		params.Limit = 1000000
+	} else if params.MaxSearchRecord > 500000 {
+		params.Limit = 100000
+	} else {
+		params.Limit = 10000
+	}
+
 	if params.Order == "asc" {
 		params.Offset = minOffset
 	}
