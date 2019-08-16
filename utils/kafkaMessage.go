@@ -1,21 +1,27 @@
 package utils
 
 import (
+	"fmt"
 	"sort"
 	"strings"
+
+	"github.com/Shopify/sarama"
 )
 
 type KafkaMessageQueryParam struct {
-	Sort             string `json:"sort"`
-	Order            string `json:"order"`
-	Offset           int64  `json:"offset"`
-	Limit            int    `json:"limit"`
-	Broker           string `json:"Broker"`
-	Topic            string `json:"Topic"`
-	Message          string `json:"Message"`
-	MaxReturnRecord  int    `json:"MaxReturnRecord"`
-	MaxSearchRecord  int    `json:"MaxSearchRecord"`
+	Sort            string `json:"sort"`
+	Order           string `json:"order"`
+	Offset          int64  `json:"offset"`
+	Limit           int    `json:"limit"`
+	Broker          string `json:"Broker"`
+	Topic           string `json:"Topic"`
+	Message         string `json:"Message"`
+	MaxReturnRecord int    `json:"MaxReturnRecord"`
+	MaxSearchRecord int    `json:"MaxSearchRecord"`
+
+	// internal used
 	PartitionOffsets map[int32]map[string]int64
+	Consumer         sarama.Consumer
 }
 
 type KafkaMessage struct {
@@ -25,6 +31,17 @@ type KafkaMessage struct {
 }
 
 func GetMessages(params KafkaMessageQueryParam) ([]*KafkaMessage, int64) {
+	// get kafka consumer
+
+	params.Consumer = GetKafkaConsumer(params.Broker)
+	if params.Consumer == nil {
+		log("error", fmt.Sprintf("utils.kafkaTopic.GetPartitionMessages broker %s topic %s", params.Broker, params.Topic))
+	}
+
+	defer params.Consumer.Close()
+
+	// search topic message
+
 	if len(params.Message) > 0 {
 		return GetMessagesBySearch(params)
 	}
@@ -32,7 +49,7 @@ func GetMessages(params KafkaMessageQueryParam) ([]*KafkaMessage, int64) {
 	total, minOffset, maxOffset, partitionOffsets := GetTopicTotalMessage(params.Broker, params.Topic)
 	params.PartitionOffsets = partitionOffsets
 
-	// set partition start offset
+	// set partition's start offset
 
 	if params.Sort == "Offset" && params.Order == "asc" {
 		if params.Offset == 0 {
@@ -68,6 +85,8 @@ func GetMessages(params KafkaMessageQueryParam) ([]*KafkaMessage, int64) {
 func GetMessagesBySearch(params KafkaMessageQueryParam) ([]*KafkaMessage, int64) {
 	originOffset := params.Offset
 	originLimit := params.Limit
+	totalReturn := 0 //total return record
+	totalSearch := 0 //total search record
 
 	_, minOffset, maxOffset, partitionOffsets := GetTopicTotalMessage(params.Broker, params.Topic)
 	params.PartitionOffsets = partitionOffsets
@@ -90,12 +109,7 @@ func GetMessagesBySearch(params KafkaMessageQueryParam) ([]*KafkaMessage, int64)
 
 	messages := make([]*KafkaMessage, 0)
 
-	// search messages
-
-	totalReturn := 0 //total return record
-	totalSearch := 0 //total search record
-
-	// set offset limit
+	// set messages limit
 
 	if params.MaxSearchRecord > 5000000 {
 		params.Limit = 1000000

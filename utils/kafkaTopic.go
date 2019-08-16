@@ -32,7 +32,7 @@ func GetTopicTotalMessage(broker string, topic string) (total int64, minOffset i
 	maxOffset = int64(-1)
 	partitionOffsets = make(map[int32]map[string]int64)
 
-	//create consumer
+	// get kafka consumer
 
 	log("info", fmt.Sprintf("utils.kafkaTopic.GetTopicTotalMessage broker %s topic %s", broker, topic))
 
@@ -44,7 +44,7 @@ func GetTopicTotalMessage(broker string, topic string) (total int64, minOffset i
 
 	defer consumer.Close()
 
-	//topic all partitions
+	// iterator topic's all partitions
 
 	partitions, err := consumer.Partitions(topic)
 	if err != nil {

@@ -9,7 +9,7 @@ import (
 
 func GetPartitionOffsets(broker string, topic string, partition int32) (startOffset int64, endOffset int64) {
 
-	//create consumer
+	// get kafka consumer
 
 	log("info", fmt.Sprintf("utils.kafka.GetPartitionOffsets broker %s topic %s partition %d",
 		broker, topic, partition))
@@ -22,7 +22,7 @@ func GetPartitionOffsets(broker string, topic string, partition int32) (startOff
 
 	defer consumer.Close()
 
-	//create partition_consumer
+	// get kafka partition_consumer
 
 	partition_consumer, err := consumer.ConsumePartition(topic, partition, sarama.OffsetOldest)
 	if err != nil {
@@ -31,7 +31,7 @@ func GetPartitionOffsets(broker string, topic string, partition int32) (startOff
 
 	defer partition_consumer.Close()
 
-	//start set timeout
+	// start set timeout
 	ch := make(chan bool, 1)
 
 	defer close(ch)
@@ -48,7 +48,7 @@ func GetPartitionOffsets(broker string, topic string, partition int32) (startOff
 		endOffset = partition_consumer.HighWaterMarkOffset()
 		startOffset = endOffset - 1
 	}
-	//end set timeout
+	// end set timeout
 
 	log("info", fmt.Sprintf("utils.kafka.GetPartitionOffsets broker %s topic %s partition %d startOffset %d endOffset %d",
 		broker, topic, partition, startOffset, endOffset))
@@ -59,20 +59,10 @@ func GetPartitionOffsets(broker string, topic string, partition int32) (startOff
 func GetPartitionMessages(params KafkaMessageQueryParam) []*KafkaMessage {
 	messages := make([]*KafkaMessage, 0)
 
-	//create consumer
-
 	log("info", fmt.Sprintf("utils.kafka.GetMessages broker %s topic %s offset %d limit %d order %s sort %s",
 		params.Broker, params.Topic, params.Offset, params.Limit, params.Order, params.Sort))
 
-	consumer := GetKafkaConsumer(params.Broker)
-
-	if consumer == nil {
-		log("error", fmt.Sprintf("utils.kafkaTopic.GetPartitionMessages broker %s topic %s", params.Broker))
-	}
-
-	defer consumer.Close()
-
-	//topic all partitions
+	// iterator topic's all partitions
 
 	for partition, partitionOffset := range params.PartitionOffsets {
 		startOffset := partitionOffset["start"]
@@ -82,9 +72,9 @@ func GetPartitionMessages(params KafkaMessageQueryParam) []*KafkaMessage {
 			continue
 		}
 
-		partition_consumer, err := consumer.ConsumePartition(params.Topic, partition, params.Offset+1)
+		partition_consumer, err := params.Consumer.ConsumePartition(params.Topic, partition, params.Offset+1)
 		if params.Offset+1 < startOffset {
-			partition_consumer, err = consumer.ConsumePartition(params.Topic, partition, sarama.OffsetOldest)
+			partition_consumer, err = params.Consumer.ConsumePartition(params.Topic, partition, sarama.OffsetOldest)
 		}
 
 		if err != nil {
@@ -96,12 +86,12 @@ func GetPartitionMessages(params KafkaMessageQueryParam) []*KafkaMessage {
 		log("info", fmt.Sprintf("utils.kafka.GetMessages broker %s topic %s partition %d startOffset %d endOffset %d",
 			params.Broker, params.Topic, partition, startOffset, endOffset))
 
-		//get partition messages
+		//get partition's messages
 	LOOP:
 		for {
 			select {
 			case msg := <-partition_consumer.Messages():
-				//msg.offset out of range offset -- offset + limit
+				// msg.offset out of range offset --> offset + limit
 				if msg.Offset > params.Offset+int64(params.Limit) {
 					break LOOP
 				}
@@ -115,7 +105,7 @@ func GetPartitionMessages(params KafkaMessageQueryParam) []*KafkaMessage {
 				// log("info", fmt.Sprintf("utils.kafka.GetMessages offset %d, partition %d, timestamp %s, value %s\n",
 				//     msg.Offset, msg.Partition, msg.Timestamp.String(), string(msg.Value)))
 
-				//last message
+				// last message
 				if msg.Offset == endOffset {
 					break LOOP
 				}
