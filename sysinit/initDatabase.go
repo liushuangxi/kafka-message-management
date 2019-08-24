@@ -1,6 +1,8 @@
 package sysinit
 
 import (
+	"flag"
+
 	_ "github.com/liushuangxi/kafka-message-management/models"
 
 	"github.com/astaxie/beego"
@@ -26,6 +28,31 @@ func InitDatabase() {
 	dbHost := beego.AppConfig.String(dbType + "::db_host")
 	//数据库端口
 	dbPort := beego.AppConfig.String(dbType + "::db_port")
+
+	//解析命令行参数
+	cliHost := flag.String("mysql_host", "", "mysql host")
+	cliPort := flag.String("mysql_port", "", "mysql port")
+	cliName := flag.String("mysql_db_name", "", "mysql db name")
+	cliUser := flag.String("mysql_user", "", "mysql username")
+	cliPass := flag.String("mysql_pass", "", "mysql password")
+	flag.Parse()
+
+	if *cliHost != "" {
+		dbHost = *cliHost
+	}
+	if *cliPort != "" {
+		dbPort = *cliPort
+	}
+	if *cliName != "" {
+		dbName = *cliName
+	}
+	if *cliUser != "" {
+		dbUser = *cliUser
+	}
+	if *cliPass != "" {
+		dbPwd = *cliPass
+	}
+
 	switch dbType {
 	case "sqlite3":
 		orm.RegisterDataBase(dbAlias, dbType, dbName)

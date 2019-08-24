@@ -13,3 +13,6 @@ mysql -uroot -p123456 kmm < private/kmm.sql
 
 ### step 3
 go run main.go
+
+## direct exec
+./private/kafka-message-management -mysql_host='127.0.0.1' -mysql_port=3306 -mysql_db_name='kmm' -mysql_user='root' -mysql_pass='123456'
