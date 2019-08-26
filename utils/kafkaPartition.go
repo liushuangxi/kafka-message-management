@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -96,12 +98,20 @@ func GetPartitionMessages(params KafkaMessageQueryParam) []*KafkaMessage {
 					break LOOP
 				}
 
-				messages = append(messages, &KafkaMessage{
+				message := KafkaMessage{
 					Offset:      msg.Offset,
 					Partition:   msg.Partition,
-					PublishTime: msg.Timestamp.Format("2006-01-02 15:04:05"),
-					Data:        string(msg.Value),
-				})
+					PublishTime: msg.Timestamp.Format("2006-01-02 15:04:05")}
+
+				var out bytes.Buffer
+				err := json.Indent(&out, []byte(string(msg.Value)), "", "  ")
+				if err != nil {
+					message.Data = string(msg.Value)
+				} else {
+					message.Data = out.String()
+				}
+
+				messages = append(messages, &message)
 
 				// log("info", fmt.Sprintf("utils.kafka.GetMessages offset %d, partition %d, timestamp %s, value %s\n",
 				//     msg.Offset, msg.Partition, msg.Timestamp.String(), string(msg.Value)))

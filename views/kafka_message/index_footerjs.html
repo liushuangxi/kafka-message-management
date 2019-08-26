@@ -119,29 +119,7 @@
                 field: 'Data',
                 title: 'Data',
                 formatter: function (value, row, params) {
-                    try {
-                        var data = row.Data
-                        var bigint = data.match(/:(\d{16,})/g);
-                        if (bigint && bigint.length > 0) {
-                            for (var i = 0; i < bigint.length; i++) {
-                                data = data.replace(bigint[i] ,':"' + bigint[i].substring(1) + '"');  
-                            }
-                        }
-        
-                        var json = JSON.stringify(JSON.parse(data), null, 2);
-
-                        if (bigint && bigint.length > 0) {
-                            for (var i = 0; i < bigint.length; i++) {
-                                json = json.replace(': "' + bigint[i].substring(1) + '"', bigint[i].replace(':', ': '));  
-                            }
-                        }
-                    } catch (e) {
-                        var json = row.Data;
-
-                        console.log(e)
-                    }
-
-                    return "<pre id='out_pre'>" + json + "</pre>";
+                    return "<pre>" + row.Data + "</pre>"
                 }
             }],
             onLoadSuccess: function (data) {
