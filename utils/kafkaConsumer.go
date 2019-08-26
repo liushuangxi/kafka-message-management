@@ -15,7 +15,10 @@ func GetKafkaConsumer(broker string) sarama.Consumer {
 
 	log("info", fmt.Sprintf("utils.kafkaConsumer.GetKafkaConsumer broker %s", broker))
 
-	consumerInstance, err := sarama.NewConsumer([]string{broker}, nil)
+	config := sarama.NewConfig()
+	config.Version = sarama.V0_10_0_0
+
+	consumerInstance, err := sarama.NewConsumer([]string{broker}, config)
 	if err != nil {
 		log("error", fmt.Sprintf("utils.kafkaConsumer.GetKafkaConsumer error %s", err.Error()))
 	}

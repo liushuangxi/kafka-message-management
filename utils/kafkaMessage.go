@@ -25,9 +25,10 @@ type KafkaMessageQueryParam struct {
 }
 
 type KafkaMessage struct {
-	Offset    int64
-	Partition int32
-	Data      string
+	Offset      int64
+	Partition   int32
+	PublishTime string
+	Data        string
 }
 
 func GetMessages(params KafkaMessageQueryParam) ([]*KafkaMessage, int64) {

@@ -113,23 +113,8 @@
                 field: 'Partition',
                 title: 'Partition'
             }, {
-                field: '',
-                title: 'Publish Date',
-                formatter: function (value, row, params) {
-                    try {
-                        var json = JSON.parse(row.Data);
-                    } catch (e) {
-                        return "";
-                    }
-
-                    if (!json.hasOwnProperty('timestamp')) {
-                        return '';
-                    }
-
-                    var date = new Date(json.timestamp + 8 * 3600 * 1000);
-
-                    return date.toJSON().substr(0, 19).replace('T', "<br>").replace(/-/g, '.');
-                }
+                field: 'PublishTime',
+                title: 'Publish Time'
             }, {
                 field: 'Data',
                 title: 'Data',
@@ -160,6 +145,7 @@
                 }
             }],
             onLoadSuccess: function (data) {
+                 $("[data-field='PublishTime'] .th-inner").css('width', 150);
             },
             onCheckAll: function (rows) {
                 $(".table-btn-check-enable").prop('disabled', false);

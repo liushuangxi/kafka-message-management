@@ -97,9 +97,10 @@ func GetPartitionMessages(params KafkaMessageQueryParam) []*KafkaMessage {
 				}
 
 				messages = append(messages, &KafkaMessage{
-					Offset:    msg.Offset,
-					Partition: msg.Partition,
-					Data:      string(msg.Value),
+					Offset:      msg.Offset,
+					Partition:   msg.Partition,
+					PublishTime: msg.Timestamp.Format("2006-01-02 15:04:05"),
+					Data:        string(msg.Value),
 				})
 
 				// log("info", fmt.Sprintf("utils.kafka.GetMessages offset %d, partition %d, timestamp %s, value %s\n",
