@@ -26,4 +26,6 @@ git clone https://github.com/liushuangxi/kafka-message-management
 mysql -uroot -p123456 kmm < private/kmm.sql
 
 ### step 3
-./private/kafka-message-management -mysql_host='127.0.0.1' -mysql_port=3306 -mysql_db_name='kmm' -mysql_user='root' -mysql_pass='123456'
+https://github.com/liushuangxi/resource/blob/master/kafka-message-management
+
+./kafka-message-management -mysql_host='127.0.0.1' -mysql_port=3306 -mysql_db_name='kmm' -mysql_user='root' -mysql_pass='123456'

@@ -101,7 +101,7 @@ func GetPartitionMessages(params KafkaMessageQueryParam) []*KafkaMessage {
 				message := KafkaMessage{
 					Offset:      msg.Offset,
 					Partition:   msg.Partition,
-					PublishTime: msg.Timestamp.Format("2006-01-02 15:04:05")}
+					PublishTime: msg.Timestamp.Format("2006-01-02<br>15:04:05")}
 
 				var out bytes.Buffer
 				err := json.Indent(&out, []byte(string(msg.Value)), "", "  ")
