@@ -6,13 +6,27 @@
 <script src="/static/plugins/x-editable/js/bootstrap-editable.min.js"></script>
 <!-- bootstrap-table启用x-editable插件 -->
 <script src="/static/plugins/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="/static/plugins/daterangepicker-v3.0.5/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/plugins/daterangepicker-v3.0.5/daterangepicker.css" />
 <script>
     var $dataGrid = $('#dataGrid');
     var $searchForm = $("#searchForm")
     //初始化加载
     $(function () {
         pageInit();
+        calendarInit();
     });
+    function calendarInit() {
+        $('input[name="datetimes"]').daterangepicker({
+            timePicker: true,
+            startDate: moment().startOf('hour'),
+            endDate: moment().startOf('hour'),
+            timePicker24Hour: true,
+            locale: {
+              format: 'YYYY-MM-DD HH:mm:ss'
+            }
+        });
+    }
 
     //初始化页面
     function pageInit() {
@@ -80,6 +94,7 @@
                 //params的自带参数类型由queryParamsType决定
                 params.Broker = $('input[name="Broker"]').val();
                 params.Topic = $('input[name="Topic"]').val();
+                params.TimeStr = $('input[name="datetimes"]').val();
                 params.Message = $('.searchForm input[name="Message"]').val();
                 params.MaxReturnRecord = parseInt($('.searchForm input[name="MaxReturnRecord"]').val());
                 params.MaxSearchRecord = parseInt($('.searchForm input[name="MaxSearchRecord"]').val());
@@ -123,8 +138,7 @@
                 }
             }],
             onLoadSuccess: function (data) {
-                $("[data-field='Offset'] .th-inner").css('width', 100);
-                $("[data-field='PublishTime'] .th-inner").css('width', 120);
+                $("[data-field='PublishTime'] .th-inner").css('width', 150);
             },
             onCheckAll: function (rows) {
                 $(".table-btn-check-enable").prop('disabled', false);
