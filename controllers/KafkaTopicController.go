@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"log"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -53,6 +54,13 @@ func (c *KafkaTopicController) DataGrid() {
 
 	log.Printf("%s", params.Topic)
 
+	// Kafka Manager
+	broker, _ := models.KafkaBrokerOneByName(params.Broker)
+
+	re, _ := regexp.Compile("/$")
+	broker.Manager = re.ReplaceAllString(broker.Manager, "")
+	// Kafka Manager
+
 	// Topic Collect
 	paramsCollect := models.KafkaTopicCollectQueryParam{}
 	paramsCollect.UserId = int64(c.curUser.Id)
@@ -74,6 +82,7 @@ func (c *KafkaTopicController) DataGrid() {
 
 		topic := make(map[string]string)
 		topic["Topic"] = topics[i]
+		topic["Manager"] = broker.Manager + "/clusters/" + broker.Cluster + "/topics/" + topics[i]
 
 		_, ok := collectMap[topics[i]]
 

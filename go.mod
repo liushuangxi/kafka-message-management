@@ -6,6 +6,7 @@ require (
 	github.com/Bowery/prompt v0.0.0-20190916142128-fa8279994f75 // indirect
 	github.com/Shopify/sarama v1.27.1
 	github.com/astaxie/beego v1.12.2
+	github.com/beego/bee v1.12.0 // indirect
 	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect

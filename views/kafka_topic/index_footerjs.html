@@ -110,6 +110,13 @@
                     return "<a class='topic' target='_blank' href='" + url + "'>" + row.Topic + "</a>"
                 }
             }, {
+                field: 'Manager',
+                title: 'Topic Detail（Kafka Manager）',
+                width: '200px',
+                formatter: function (value, row, params) {
+                    return "<a class='topic' target='_blank' href='" + row.Manager + "'>Topic Detail</a>"
+                }
+            }, {
                 field: 'operate',
                 title: '操作',
                 width: '100px',

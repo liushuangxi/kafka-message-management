@@ -20,9 +20,11 @@ type KafkaBrokerQueryParam struct {
 
 // KafkaBroker 实体类
 type KafkaBroker struct {
-	Id     int
-	Broker string `orm:"size(300)"`
-	Alias  string `orm:"size(300)"`
+	Id      int
+	Broker  string `orm:"size(300)"`
+	Alias   string `orm:"size(300)"`
+	Cluster string `orm:"size(300)"`
+	Manager string `orm:"size(300)"`
 }
 
 // KafkaBrokerPageList 获取分页数据
@@ -72,11 +74,19 @@ func KafkaTopicTotal() int64 {
 	return int64(total)
 }
 
-// KafkaBrokerOne 根据id获取单条
 func KafkaBrokerOne(id int) (*KafkaBroker, error) {
 	o := orm.NewOrm()
 	m := KafkaBroker{Id: id}
 	err := o.Read(&m)
+	if err != nil {
+		return nil, err
+	}
+	return &m, nil
+}
+
+func KafkaBrokerOneByName(broker string) (*KafkaBroker, error) {
+	m := KafkaBroker{}
+	err := orm.NewOrm().QueryTable(KafkaBrokerTBName()).Filter("broker", broker).One(&m)
 	if err != nil {
 		return nil, err
 	}
