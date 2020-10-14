@@ -120,6 +120,7 @@
             }, {
                 field: 'Manager',
                 title: 'Topic List（Kafka Manager）',
+                width: '200px',
                 sortable: true,
                 formatter: function (value, row, index) {
                     var url = row.Manager.replace(/(\/$)/g, "") + "/clusters/" + row.Cluster + "/topics"

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.31, for Linux (x86_64)
 --
 -- Host: localhost    Database: kmm
 -- ------------------------------------------------------
--- Server version	5.7.26
+-- Server version	5.7.31
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -81,7 +81,10 @@ CREATE TABLE `rms_kafka_broker` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `broker` varchar(300) NOT NULL DEFAULT '',
   `alias` varchar(300) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
+  `cluster` varchar(300) NOT NULL DEFAULT '',
+  `manager` varchar(300) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_broker` (`broker`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -235,4 +238,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-24 20:24:07
+-- Dump completed on 2020-10-14 16:37:54
