@@ -70,7 +70,7 @@ func (c *KafkaTopicCollectController) DataGrid() {
 	//Broker List
 
 	//Add Kafka Manager
-	topics := make([]interface{}, total)
+	topics := make([]interface{}, len(data))
 
 	total = 0
 	for _, val := range data {
