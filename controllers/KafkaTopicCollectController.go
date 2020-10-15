@@ -72,7 +72,7 @@ func (c *KafkaTopicCollectController) DataGrid() {
 	//Add Kafka Manager
 	topics := make([]interface{}, len(data))
 
-	total = 0
+	count = 0
 	for _, val := range data {
 		topic := make(map[string]string)
 
@@ -88,8 +88,8 @@ func (c *KafkaTopicCollectController) DataGrid() {
 			topic["Manager"] = ""
 		}
 
-		topics[total] = topic
-		total++
+		topics[count] = topic
+		count++
 	}
 	//Add Kafka Manager
 
