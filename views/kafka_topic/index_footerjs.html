@@ -104,7 +104,7 @@
             columns: [{
                 field: 'Topic',
                 title: 'Topic 名称',
-                formatter: function (value, row, params) {
+                formatter: function (value, row, index) {
                     var url = '{{ urlfor "KafkaMessageController.Index"}}'
                     url += "?broker=" + $('input[name="Broker"]').val() + "&topic=" + row.Topic
                     return "<a class='topic' target='_blank' href='" + url + "'>" + row.Topic + "</a>"
@@ -113,7 +113,10 @@
                 field: 'Manager',
                 title: 'Topic Detail（Kafka Manager）',
                 width: '200px',
-                formatter: function (value, row, params) {
+                formatter: function (value, row, index) {
+                    if(row.Manager == "" || row.Manager == null || row.Manager == undefined){
+                        return ""
+                    }
                     return "<a class='topic' target='_blank' href='" + row.Manager + "'>Topic Detail</a>"
                 }
             }, {

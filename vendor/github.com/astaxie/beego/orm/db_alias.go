@@ -424,9 +424,9 @@ func GetDB(aliasNames ...string) (*sql.DB, error) {
 }
 
 type stmtDecorator struct {
-	wg      sync.WaitGroup
+	wg sync.WaitGroup
 	lastUse int64
-	stmt    *sql.Stmt
+	stmt *sql.Stmt
 }
 
 func (s *stmtDecorator) getStmt() *sql.Stmt {
@@ -452,7 +452,7 @@ func (s *stmtDecorator) destroy() {
 
 func newStmtDecorator(sqlStmt *sql.Stmt) *stmtDecorator {
 	return &stmtDecorator{
-		stmt:    sqlStmt,
+		stmt: sqlStmt,
 		lastUse: time.Now().Unix(),
 	}
 }

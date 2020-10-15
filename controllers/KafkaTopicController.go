@@ -82,8 +82,11 @@ func (c *KafkaTopicController) DataGrid() {
 
 		topic := make(map[string]string)
 		topic["Topic"] = topics[i]
-		topic["Manager"] = broker.Manager + "/clusters/" + broker.Cluster + "/topics/" + topics[i]
-
+		if broker.Manager == "" {
+			topic["Manager"] = ""
+		} else {
+			topic["Manager"] = broker.Manager + "/clusters/" + broker.Cluster + "/topics/" + topics[i]
+		}
 		_, ok := collectMap[topics[i]]
 
 		if ok {

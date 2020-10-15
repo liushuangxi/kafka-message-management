@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -49,10 +50,53 @@ func (c *KafkaTopicCollectController) DataGrid() {
 
 	//获取数据列表和总数
 	data, total := models.KafkaTopicCollectPageList(&params)
+
+	//Broker List
+	brokers := make(map[string]string)
+
+	tmp := make([]*models.KafkaBroker, 0)
+	orm.NewOrm().QueryTable(models.KafkaBrokerTBName()).All(&tmp)
+
+	for _, val := range tmp {
+		re, _ := regexp.Compile("/$")
+		val.Manager = re.ReplaceAllString(val.Manager, "")
+
+		if val.Manager == "" {
+			brokers[val.Broker] = ""
+		} else {
+			brokers[val.Broker] = val.Manager + "/clusters/" + val.Cluster + "/topics/"
+		}
+	}
+	//Broker List
+
+	//Add Kafka Manager
+	topics := make([]interface{}, total)
+
+	total = 0
+	for _, val := range data {
+		topic := make(map[string]string)
+
+		topic["Id"] = strconv.Itoa(val.Id)
+		topic["Broker"] = val.Broker
+		topic["Topic"] = val.Topic
+
+		_, ok := brokers[val.Broker]
+
+		if ok && brokers[val.Broker] != "" {
+			topic["Manager"] = brokers[val.Broker] + val.Topic
+		} else {
+			topic["Manager"] = ""
+		}
+
+		topics[total] = topic
+		total++
+	}
+	//Add Kafka Manager
+
 	//定义返回的数据结构
 	result := make(map[string]interface{})
 	result["total"] = total
-	result["rows"] = data
+	result["rows"] = topics
 	c.Data["json"] = result
 	c.ServeJSON()
 }
