@@ -15,6 +15,7 @@ type KafkaTopicCollectQueryParam struct {
 	UserId int64
 	Broker string
 	Topic  string
+	Alias  string
 }
 
 // KafkaTopicCollect 实体类
@@ -23,6 +24,7 @@ type KafkaTopicCollect struct {
 	UserId int    `orm:"size(11)"`
 	Broker string `orm:"size(300)"`
 	Topic  string `orm:"size(300)"`
+	Alias  string `orm:"size(300)"`
 }
 
 // KafkaTopicCollectPageList 获取分页数据

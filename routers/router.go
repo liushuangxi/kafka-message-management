@@ -25,6 +25,7 @@ func init() {
 	//KafkaTopicCollect路由
 	beego.Router("/kafka_topic_collect/index", &controllers.KafkaTopicCollectController{}, "*:Index")
 	beego.Router("/kafka_topic_collect/datagrid", &controllers.KafkaTopicCollectController{}, "Get,Post:DataGrid")
+	beego.Router("/kafka_topic_collect/edit/?:id", &controllers.KafkaTopicCollectController{}, "Get,Post:Edit")
 	beego.Router("/kafka_topic_collect/delete", &controllers.KafkaTopicCollectController{}, "Post:Delete")
 	beego.Router("/kafka_topic_collect/update", &controllers.KafkaTopicCollectController{}, "Post:Update")
 

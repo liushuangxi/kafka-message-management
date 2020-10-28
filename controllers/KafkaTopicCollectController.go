@@ -79,6 +79,7 @@ func (c *KafkaTopicCollectController) DataGrid() {
 		topic["Id"] = strconv.Itoa(val.Id)
 		topic["Broker"] = val.Broker
 		topic["Topic"] = val.Topic
+		topic["Alias"] = val.Alias
 
 		_, ok := brokers[val.Broker]
 
@@ -99,6 +100,50 @@ func (c *KafkaTopicCollectController) DataGrid() {
 	result["rows"] = topics
 	c.Data["json"] = result
 	c.ServeJSON()
+}
+
+func (c *KafkaTopicCollectController) Edit() {
+	if c.Ctx.Request.Method == "POST" {
+		c.Save()
+	}
+	Id, _ := c.GetInt(":id", 0)
+	m := models.KafkaTopicCollect{Id: Id}
+	if Id > 0 {
+		o := orm.NewOrm()
+		err := o.Read(&m)
+		if err != nil {
+			c.pageError("数据无效，请刷新后重试")
+		}
+	}
+	c.Data["m"] = m
+	c.setTpl("kafka_topic_collect/edit.html", "shared/layout_pullbox.html")
+	c.LayoutSections = make(map[string]string)
+	c.LayoutSections["footerjs"] = "kafka_topic_collect/edit_footerjs.html"
+}
+
+func (c *KafkaTopicCollectController) Save() {
+	var err error
+	m := models.KafkaTopicCollect{}
+	//获取form里的值
+	if err = c.ParseForm(&m); err != nil {
+		c.jsonResult(enums.JRCodeFailed, "获取数据失败", m.Id)
+	}
+	o := orm.NewOrm()
+	if m.Id == 0 {
+		if _, err = o.Insert(&m); err == nil {
+			c.jsonResult(enums.JRCodeSucc, "添加成功", m.Id)
+		} else {
+			c.jsonResult(enums.JRCodeFailed, "添加失败", m.Id)
+		}
+
+	} else {
+		if _, err = o.Update(&m); err == nil {
+			c.jsonResult(enums.JRCodeSucc, "编辑成功", m.Id)
+		} else {
+			c.jsonResult(enums.JRCodeFailed, "编辑失败", m.Id)
+		}
+	}
+	c.jsonResult(enums.JRCodeSucc, "编辑成功", m.Id)
 }
 
 func (c *KafkaTopicCollectController) Delete() {

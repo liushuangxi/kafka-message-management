@@ -112,6 +112,10 @@
                 title: 'Topic',
                 sortable: true
             }, {
+                field: 'Alias',
+                title: 'Alias',
+                sortable: true
+            }, {
                 field: 'Manager',
                 title: 'Topic Detail（Kafka Manager）',
                 width: '200px',
@@ -124,11 +128,18 @@
             }, {
                 field: 'operate',
                 title: '操作',
-                width: '100px',
+                width: '150px',
                 formatter: function (value, row, index) {
+                    var ret = [];
+                    if ('{{.canEdit}}' === 'true') {
+                        ret.push('<button class="btn btn-primary btn-xs"  onclick="EditFun(' + row.Id + ')"><i class="fa fa-pencil"></i> 编辑</button>');
+                    }
+
                     var url = '{{ urlfor "KafkaMessageController.Index"}}'
                     url += "?broker=" + row.Broker + "&topic=" + row.Topic
-                    return '<button class="btn btn-primary btn-xs" onclick="location.href=\'' + url + '\'">查看消息</button>'
+                    ret.push('<button class="btn btn-primary btn-xs" onclick="location.href=\'' + url + '\'">查看消息</button>')
+
+                    return ret.join('  ');
                 }
             }],
             onLoadSuccess: function (data) {
@@ -150,6 +161,30 @@
             }
         });
     }
+   
+	function EditFun(Id) {
+   	    var title = '添加 Topic Collect';
+   	    if (Id > 0) {
+   	        title = "编辑 Topic Collect"
+   	    }
+   	    var url = '{{ urlfor "KafkaTopicCollectController.Edit"}}' + '/' + Id;
+   	    layer.open({
+   	        type: 2,
+   	        title: title,
+   	        shadeClose: false,
+   	        shade: 0.2,
+   	        maxmin: true,
+   	        shift: 1,
+   	        area: ['800px', '400px'],
+   	        content: url,
+   	        btn: ['保存', '关闭'],
+   	        yes: function (index, layero) {
+   	            var iframeWin = window[layero.find('iframe')[0]['name']];
+   	            console.log(iframeWin)
+   	            iframeWin.formSubmit();
+   	        }
+   	    });
+   	}
 
     function DeleteFun() {
         var url = '{{ urlfor "KafkaTopicCollectController.Delete"}}';
