@@ -8,6 +8,6 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/lib/pq v1.7.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4
-	golang.org/x/sys v0.0.0-20201009025420-dfb3f7c4e634 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 )

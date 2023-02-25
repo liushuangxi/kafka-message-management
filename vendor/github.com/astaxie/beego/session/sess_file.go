@@ -15,11 +15,11 @@
 package session
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"errors"
 	"path"
 	"path/filepath"
 	"strings"
